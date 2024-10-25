@@ -4,11 +4,12 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <fstream>
 using namespace std;
 
 
 
-
+// GUI Components
 class Panel
 {
 public:
@@ -39,6 +40,7 @@ public:
 };
 
 
+// Version Specific GUI Components
 class Word00Panel : public Panel
 {
 public:
@@ -159,7 +161,7 @@ public:
 
 
 
-
+// Factories
 class WordFactory
 {
 public:
@@ -267,7 +269,20 @@ public:
 
 int main()
 {
-    cout << "Hello World!\n";
+    // Read the config file
+    ifstream file("config_file.txt");
+    string str;
+
+    // Go through each line of the config file
+    while (getline(file, str))
+    {
+        if (str == "") // If we don't have text, continue
+        {
+            continue;
+        }
+
+        cout << str << endl;
+    }
 
     WordFactory* wordFactory;
 
