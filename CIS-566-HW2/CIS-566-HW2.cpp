@@ -179,6 +179,16 @@ class Word90Factory : public WordFactory
 public:
     static int instanceCount;
 
+    Word90Factory()
+    {
+        instanceCount++;
+
+        if (instanceCount > 2)
+        {
+            cout << "Generation 90 asked to run more than twice.\n";
+        }
+    }
+
     Panel* getPanel() override
     {
         return new Word90Panel();
@@ -200,6 +210,16 @@ class Word00Factory : public WordFactory
 {
 public:
     static int instanceCount;
+
+    Word00Factory()
+    {
+        instanceCount++;
+
+        if (instanceCount > 2)
+        {
+            cout << "Generation 00 asked to run more than twice.\n";
+        }
+    }
 
     Panel* getPanel() override
     {
@@ -224,6 +244,16 @@ class Word10Factory : public WordFactory
 public:
     static int instanceCount;
 
+    Word10Factory()
+    {
+        instanceCount++;
+
+        if (instanceCount > 2)
+        {
+            cout << "Generation 10 asked to run more than twice.\n";
+        }
+    }
+
     Panel* getPanel() override
     {
         return new Word10Panel();
@@ -246,6 +276,16 @@ class Word21Factory : public WordFactory
 public:
     static int instanceCount;
 
+    Word21Factory()
+    {
+        instanceCount++;
+
+        if (instanceCount > 2)
+        {
+            cout << "Generation 21 asked to run more than twice.\n";
+        }
+    }
+
     Panel* getPanel() override
     {
         return new Word21Panel();
@@ -263,7 +303,42 @@ public:
 };
 
 
+// set the initial value of the instances to 0
+int Word90Factory::instanceCount = 0;
+int Word00Factory::instanceCount = 0;
+int Word10Factory::instanceCount = 0;
+int Word21Factory::instanceCount = 0;
 
+
+
+
+class WordFactoryProducer
+{
+public:
+    WordFactory* getWordFactory(string type)
+    {
+        if (type == "Word90")
+        {
+            return new Word90Factory();
+        }
+        else if (type == "Word00")
+        {
+            return new Word00Factory();
+        }
+        else if (type == "Word10")
+        {
+            return new Word10Factory();
+        }
+        else if (type == "Word21")
+        {
+            return new Word21Factory();
+        }
+        else 
+        {
+            return new WordFactory();
+        }
+    }
+};
 
 
 
@@ -273,6 +348,10 @@ int main()
     ifstream file("config_file.txt");
     string str;
 
+    // Initiliaze our factory producer
+    WordFactoryProducer* factoryProducer = new WordFactoryProducer();
+
+
     // Go through each line of the config file
     while (getline(file, str))
     {
@@ -281,20 +360,22 @@ int main()
             continue;
         }
 
-        cout << str << endl;
+        // Get our factory for this version of word
+        WordFactory* wordFactory = factoryProducer->getWordFactory(str);
+
+        // Get our components from this factory
+        Panel* panel = wordFactory->getPanel();
+        Button* button = wordFactory->getButton();
+        Textbox* textbox = wordFactory->getTextbox();
+
+        // Test our components
+        panel->test();
+        button->test();
+        textbox->test();
+
+        // Line of blank space
+        cout << "\n";
     }
-
-    WordFactory* wordFactory;
-
-    wordFactory = new Word10Factory();
-
-    Panel* panel = wordFactory->getPanel();
-    Button* button = wordFactory->getButton();
-    Textbox* textbox = wordFactory->getTextbox();
-
-    panel->test();
-    button->test();
-    textbox->test();
 }
 
 
